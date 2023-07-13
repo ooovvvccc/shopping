@@ -7,17 +7,17 @@ import java.sql.Statement;
 
 public class DBHelper {
     // 定义数据库地址、表名等常量
-    private static final String DB_URL = "jdbc:sqlite:shopping.db";
-    private static final String ADMIN_TABLE = "admin";
-    private static final String USER_TABLE = "user";
-    private static final String PRODUCT_TABLE = "product";
-    private static final String CART_TABLE = "cart";
-    private static final String HISTORY_TABLE = "history";
+    public static final String DB_URL = "jdbc:sqlite:shopping.db";
+    public static final String ADMIN_TABLE = "admin";
+    public static final String USER_TABLE = "user";
+    public static final String PRODUCT_TABLE = "product";
+    public static final String CART_TABLE = "cart";
+    public static final String HISTORY_TABLE = "history";
 
     // 定义数据库连接、语句和结果集等变量
-    private Connection conn;
-    private Statement stmt;
-    private ResultSet rs;
+    public Connection conn;
+    public Statement stmt;
+    public ResultSet rs;
 
     // 构造方法，用来加载驱动、创建连接和创建表
     public DBHelper() {
