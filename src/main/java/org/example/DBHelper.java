@@ -1,4 +1,5 @@
 package org.example;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,6 +8,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.PreparedStatement;
+
 public class DBHelper {
     // 定义数据库地址、表名等常量
     public static final String DB_URL = "jdbc:sqlite:shopping.db";
@@ -73,14 +75,26 @@ public class DBHelper {
                 + "FOREIGN KEY (product_id) REFERENCES product(id)"
                 + ");";
         stmt.executeUpdate(sql1);
-        stmt.executeUpdate(sql2);stmt.executeUpdate(sql3);stmt.executeUpdate(sql4);stmt.executeUpdate(sql5);
+        stmt.executeUpdate(sql2);
+        stmt.executeUpdate(sql3);
+        stmt.executeUpdate(sql4);
+        stmt.executeUpdate(sql5);
     }
 
     // 获取连接的方法，用来返回数据库连接对象
-    public Connection getConnection() {return conn;}
+    public Connection getConnection() {
+        return conn;
+    }
 
     // 关闭资源的方法，用来关闭数据库连接、语句和结果集
-    public void close() {try {if (rs != null) {rs.close();}if (stmt != null) {stmt.close();}
+    public void close() {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
             if (conn != null) {
                 conn.close();
             }
@@ -88,24 +102,37 @@ public class DBHelper {
             e.printStackTrace();
         }
     }
+
     // 在DBHelper类中添加一个getAllItems()方法
-public List<Item> getAllItems() {
-    List<Item> items = new ArrayList<>(); // 创建一个空的List对象
-    String sql = "SELECT * FROM " + PRODUCT_TABLE; // 定义查询语句
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql); // 创建PreparedStatement对象
-        rs = ps.executeQuery(); // 执行查询语句，返回ResultSet对象
-        while (rs.next()) { // 遍历ResultSet对象
-            int id = rs.getInt("id"); // 获取商品id
-            String name = rs.getString("name"); // 获取商品名称
-            double price = rs.getDouble("price"); // 获取商品价格
-            int stock = rs.getInt("stock"); // 获取商品库存
-            Item item = new Item(id, name, price, stock); // 创建Item对象，quantity默认为0
-            items.add(item); // 将Item对象添加到List中
+    public List<Item> getAllItems() {
+        List<Item> items = new ArrayList<>(); // 创建一个空的List对象
+        String sql = "SELECT * FROM " + PRODUCT_TABLE; // 定义查询语句
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql); // 创建PreparedStatement对象
+            rs = ps.executeQuery(); // 执行查询语句，返回ResultSet对象
+            while (rs.next()) { // 遍历ResultSet对象
+                int id = rs.getInt("id"); // 获取商品id
+                String name = rs.getString("name"); // 获取商品名称
+                double price = rs.getDouble("price"); // 获取商品价格
+                int stock = rs.getInt("stock"); // 获取商品库存
+                Item item = new Item(id, name, price, stock); // 创建Item对象，quantity默认为0
+                items.add(item); // 将Item对象添加到List中
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return items; // 返回List对象
     }
-    return items; // 返回List对象
-}
+
+    public void insertAdmin(Admin admin) {
+        String sql = "INSERT INTO " + ADMIN_TABLE + "(username, password) VALUES (?, ?)"; // 定义插入语句
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql); // 创建PreparedStatement对象
+            ps.setString(1, admin.getUsername()); // 设置第一个参数为管理员用户名
+            ps.setString(2, admin.getPassword()); // 设置第二个参数为管理员密码
+            ps.executeUpdate(); // 执行插入语句
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

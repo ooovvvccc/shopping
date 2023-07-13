@@ -1,4 +1,5 @@
 package org.example;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,6 +30,7 @@ public class User {
         this.cart = new ArrayList<>();
         this.scanner = new Scanner(System.in);
     }
+    ShoppingApp s=new ShoppingApp();
 
     // 注册方法，返回布尔值表示是否注册成功
     public boolean register() {
@@ -187,7 +189,8 @@ public class User {
                 int quantity = item.getQuantity();
                 double total = productPrice * quantity;
                 // 构造插入语句，将购物车中的商品信息插入到历史记录表中
-                String sql1 = "INSERT INTO " + historyTable + " (user_id, product_id, quantity, total, date) VALUES (?, ?, ?, ?, ?);";
+                String sql1 = "INSERT INTO " + historyTable
+                        + " (user_id, product_id, quantity, total, date) VALUES (?, ?, ?, ?, ?);";
                 // 使用连接对象创建预编译语句对象，并设置参数值
                 PreparedStatement pstmt1 = connection.prepareStatement(sql1);
                 pstmt1.setInt(1, id);
@@ -235,7 +238,8 @@ public class User {
             String historyTable = dbHelper.HISTORY_TABLE;
             String productTable = dbHelper.PRODUCT_TABLE;
             // 构造查询语句，使用连接操作符和子查询来查询历史记录表和商品表中的相关信息
-            String sql = "SELECT h.quantity, h.total, h.date, p.name FROM " + historyTable + " h JOIN " + productTable + " p ON h.product_id = p.id WHERE h.user_id = ?;";
+            String sql = "SELECT h.quantity, h.total, h.date, p.name FROM " + historyTable + " h JOIN " + productTable
+                    + " p ON h.product_id = p.id WHERE h.user_id = ?;";
             // 使用连接对象创建预编译语句对象，并设置参数值
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setInt(1, id);
@@ -302,290 +306,297 @@ public class User {
                 ", password='" + password + '\'' +
                 ", loggedIn=" + loggedIn +
                 '}';
-            }
+    }
 
-            // 显示用户菜单的方法，无返回值
-            public void userMenu() {
-                System.out.println("欢迎你，" + username);
-                System.out.println("请选择你要进行的操作：");
-                System.out.println("1. 密码管理");
-                System.out.println("2. 购物");
-                System.out.println("3. 查看购物历史");
-                System.out.println("4. 退出登录");
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // 消除回车
-                switch (choice) {
-                    case 1:
-                        passwordManage(); // 密码管理
-                        userMenu();
-                        break;
-                    case 2:
-                        shopping(); // 购物
-                        userMenu();
-                        break;
-                    case 3:
-                        viewHistory(); // 查看购物历史
-                        userMenu();
-                        break;
-                    case 4:
-                        logout(); // 退出登录
-                        break;
-                    default:
-                        System.out.println("无效的输入，请重新输入");
-                        userMenu(); // 重新显示用户菜单
-                        break;
+    // 显示用户菜单的方法，无返回值
+    public void userMenu() {
+        System.out.println("**********用户系统***********");
+        System.out.println("*******当前在第三级界面*******");
+        System.out.println("请选择你要进行的操作：");
+        System.out.println("1. 密码管理");
+        System.out.println("2. 购物");
+        System.out.println("3. 返回上一级");
+        System.out.println("4. 退出登录");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // 消除回车
+        switch (choice) {
+            case 1:
+                passwordManage(); // 密码管理
+                userMenu();
+                break;
+            case 2:
+                shopping(); // 购物
+                userMenu();
+                break;
+            case 3:
+                s.useMenu();
+                break;
+            case 4:
+                s.useMenu();
+                break;
+            default:
+                System.out.println("无效的输入，请重新输入");
+                userMenu(); // 重新显示用户菜单
+                break;
+        }
+    }
+
+    // 密码管理的方法，无返回值
+    public void passwordManage() {
+        System.out.println("**********用户系统***********");
+        System.out.println("*******当前在第四级界面*******");
+        System.out.println("请选择你要进行的操作：");
+        System.out.println("1. 修改密码");
+        System.out.println("2. 重置密码");
+        System.out.println("3. 返回上一级");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // 消除回车
+        switch (choice) {
+            case 1:
+                changePasswordMenu(); // 修改密码菜单
+                userMenu();
+                break;
+            case 2:
+                resetPasswordMenu(); // 重置密码菜单
+                userMenu();
+                break;
+            case 3:
+                userMenu(); // 返回用户菜单
+                break;
+            default:
+                System.out.println("无效的输入，请重新输入");
+                passwordManage(); // 重新显示密码管理界面
+                break;
+        }
+    }
+
+    // 修改密码菜单的方法，无返回值
+    public void changePasswordMenu() {
+        System.out.println("请输入你的旧密码：");
+        String oldPassword = scanner.nextLine();
+        System.out.println("请输入你的新密码：");
+        String newPassword = scanner.nextLine();
+
+        if (changePassword(oldPassword, newPassword)) {
+            // 修改成功，显示提示信息并返回密码管理界面
+            System.out.println("你已成功修改密码，请牢记你的新密码");
+            passwordManage();
+            userMenu();
+        } else {
+            // 修改失败，显示提示信息并返回修改密码菜单
+            System.out.println("你输入的旧密码错误，请重新输入");
+            changePasswordMenu();
+        }
+
+    }
+
+    // 重置密码菜单的方法，无返回值
+    public void resetPasswordMenu() {
+
+        if (resetPassword()) {
+            // 重置成功，显示提示信息并返回密码管理界面
+            System.out.println("你已成功重置密码，请牢记你的新密码");
+            passwordManage();
+            userMenu();
+        } else {
+            // 重置失败，显示提示信息并返回重置密码菜单
+            System.out.println("重置密码失败，请稍后重试或联系管理员");
+            resetPasswordMenu();
+            userMenu();
+        }
+
+    }
+
+    // 购物的方法，无返回值
+    public void shopping() {
+        System.out.println("**********用户系统***********");
+        System.out.println("*******当前在第四级界面*******");
+        System.out.println("请选择你要进行的操作：");
+        System.out.println("1. 浏览商品");
+        System.out.println("2. 查看购物车");
+        System.out.println("3. 结账");
+        System.out.println("4.查看购物历史");
+        System.out.println("5. 返回上一级");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // 消除回车
+        switch (choice) {
+            case 1:
+                browseItems(); // 浏览商品
+                shopping();
+                break;
+            case 2:
+                viewCart(); // 查看购物车
+                shopping();
+                break;
+            case 3:
+                checkout(); // 结账
+                shopping();
+                break;
+            case 4:
+                viewHistory(); // 查看购物历史
+                break;
+            case 5:
+                userMenu(); // 返回用户菜单
+                break;
+            default:
+                System.out.println("无效的输入，请重新输入");
+                shopping(); // 重新显示购物界面
+                break;
+        }
+    }
+
+    // 浏览商品的方法，从数据库中获取所有商品信息，并显示在控制台，让用户选择是否添加到购物车或返回上一级
+    public void browseItems() {
+
+        try {
+            List<Item> items = dbHelper.getAllItems(); // 获取所有商品信息
+            if (items.isEmpty()) {
+                // 商品列表为空，显示提示信息
+                System.out.println("暂无商品信息，请联系管理员添加商品");
+                shopping();
+            } else {
+                // 商品列表不为空，显示商品信息
+                System.out.println("以下是所有商品信息：");
+                for (Item item : items) {
+                    System.out.println(item);
                 }
-            }
-        
-            // 密码管理的方法，无返回值
-            public void passwordManage() {
-                System.out.println("请选择你要进行的操作：");
-                System.out.println("1. 修改密码");
-                System.out.println("2. 重置密码");
-                System.out.println("3. 返回上一级");
-                int choice = scanner.nextInt();
+                // 让用户选择是否添加到购物车或返回上一级
+                System.out.println("请输入你要添加到购物车的商品编号，或输入0返回：");
+                int id = scanner.nextInt();
                 scanner.nextLine(); // 消除回车
-                switch (choice) {
-                    case 1:
-                        changePasswordMenu(); // 修改密码菜单
-                        userMenu();
-                        break;
-                    case 2:
-                        resetPasswordMenu(); // 重置密码菜单
-                        userMenu();
-                        break;
-                    case 3:
-                        userMenu(); // 返回用户菜单
-                        break;
-                    default:
-                        System.out.println("无效的输入，请重新输入");
-                        passwordManage(); // 重新显示密码管理界面
-                        break;
-                }
-            }
-        
-            // 修改密码菜单的方法，无返回值
-            public void changePasswordMenu() {
-                System.out.println("请输入你的旧密码：");
-                String oldPassword = scanner.nextLine();
-                System.out.println("请输入你的新密码：");
-                String newPassword = scanner.nextLine();
-                
-               if (changePassword(oldPassword, newPassword)) {
-                   // 修改成功，显示提示信息并返回密码管理界面
-                   System.out.println("你已成功修改密码，请牢记你的新密码");
-                   passwordManage();
-                   userMenu();
-               } else {
-                   // 修改失败，显示提示信息并返回修改密码菜单
-                   System.out.println("你输入的旧密码错误，请重新输入");
-                   changePasswordMenu();
-               }
-                
-            }
-        
-            // 重置密码菜单的方法，无返回值
-            public void resetPasswordMenu() {
-                
-               if (resetPassword()) {
-                   // 重置成功，显示提示信息并返回密码管理界面
-                   System.out.println("你已成功重置密码，请牢记你的新密码");
-                   passwordManage();
-                   userMenu();
-               } else {
-                   // 重置失败，显示提示信息并返回重置密码菜单
-                   System.out.println("重置密码失败，请稍后重试或联系管理员");
-                   resetPasswordMenu();
-                   userMenu();
-               }
-                
-            }
-        
-            // 购物的方法，无返回值
-            public void shopping() {
-                System.out.println("请选择你要进行的操作：");
-                System.out.println("1. 浏览商品");
-                System.out.println("2. 查看购物车");
-                System.out.println("3. 结账");
-                System.out.println("4. 返回上一级");
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // 消除回车
-                switch (choice) {
-                    case 1:
-                        browseItems(); // 浏览商品
-                        shopping();
-                        break;
-                    case 2:
-                        viewCart(); // 查看购物车
-                        shopping();
-                        break;
-                    case 3:
-                        checkout(); // 结账
-                        shopping();
-                        break;
-                    case 4:
-                        userMenu(); // 返回用户菜单
-                        break;
-                    default:
-                        System.out.println("无效的输入，请重新输入");
-                        shopping(); // 重新显示购物界面
-                        break;
-                }
-            }
-        
-            // 浏览商品的方法，从数据库中获取所有商品信息，并显示在控制台，让用户选择是否添加到购物车或返回上一级
-            public void browseItems() {
-                
-               try {
-                   List<Item> items = dbHelper.getAllItems(); // 获取所有商品信息
-                   if (items.isEmpty()) {
-                       // 商品列表为空，显示提示信息
-                       System.out.println("暂无商品信息，请联系管理员添加商品");
-                       shopping();
-                   } else {
-                       // 商品列表不为空，显示商品信息
-                       System.out.println("以下是所有商品信息：");
-                       for (Item item : items) {
-                           System.out.println(item);
-                       }
-                       // 让用户选择是否添加到购物车或返回上一级
-                       System.out.println("请输入你要添加到购物车的商品编号，或输入0返回上一级：");
-                       int id = scanner.nextInt();
-                       scanner.nextLine(); // 消除回车
-                       if (id == 0) {
-                           // 返回上一级
-                           shopping();
-                       } else {
-                           // 查找商品对象
-                           Item item = null;
-                           for (Item i : items) {
-                               if (i.getId() == id) {
-                                   // 找到商品对象，跳出循环
-                                   item = i;
-                                   break;
-                               }
-                           }
-                           if (item == null) {
-                               // 没有找到商品对象，显示提示信息
-                               System.out.println("无效的商品编号，请重新输入");
-                               browseItems(); // 重新浏览商品
-                           } else {
-                               // 找到商品对象，让用户输入购买数量
-                               System.out.println("请输入你要购买的数量：");
-                               int quantity = scanner.nextInt();
-                               scanner.nextLine(); // 消除回车
-                               if (quantity <= 0) {
-                                   // 购买数量不合法，显示提示信息
-                                   System.out.println("无效的购买数量，请重新输入");
-                                   browseItems(); // 重新浏览商品
-                               } else {
-                                   // 购买数量合法，设置商品对象的数量属性
-                                   item.setQuantity(quantity);
-                                   // 调用用户对象的添加到购物车方法
-                                   addToCart(item);
-                                   // 显示添加成功信息
-                                   System.out.println("已将" + item.getName() + "添加到购物车");
-                                   browseItems(); // 重新浏览商品
-                               }
-                           }
-                       }
-                   }
-               } catch (Exception e) {
-                   e.printStackTrace();
-                   System.out.println("数据库操作异常，请稍后重试");
-                   shopping(); // 返回购物界面
-               }
-                
-            }
-        
-            // 查看购物车的方法，获取用户对象的购物车列表，并显示在控制台，让用户选择是否修改或删除购物车中的商品或返回上一级
-            public void viewCart() {
-                List<Item> cart = getCart(); // 获取用户对象的购物车列表
-                if (cart.isEmpty()) {
-                    // 购物车列表为空，显示提示信息
-                    System.out.println("你的购物车为空，请先添加商品");
-                    shopping(); // 返回购物界面
+                if (id == 0) {
+                    // 返回上一级
+                    shopping();
                 } else {
-                    // 购物车列表不为空，显示购物车信息
-                    System.out.println("以下是你的购物车信息：");
-                    for (Item item : cart) {
-                        System.out.println(item);
-                    }
-                    // 让用户选择是否修改或删除购物车中的商品
-                    System.out.println("请输入你要修改或删除的商品编号，或输入0返回上一级：");
-                    int id = scanner.nextInt();
-                    scanner.nextLine(); // 消除回车
-                    if (id == 0) {
-                        // 返回上一级
-                        shopping();
-                    } else {
-                        // 查找商品对象
-                        Item item = null;
-                        for (Item i : cart) {
-                            if (i.getId() == id) {
-                                // 找到商品对象，跳出循环
-                                item = i;
-                                break;
-                            }
+                    // 查找商品对象
+                    Item item = null;
+                    for (Item i : items) {
+                        if (i.getId() == id) {
+                            // 找到商品对象，跳出循环
+                            item = i;
+                            break;
                         }
-                        if (item == null) {
-                            // 没有找到商品对象，显示提示信息
-                            System.out.println("无效的商品编号，请重新输入");
-                            viewCart(); // 重新查看购物车
+                    }
+                    if (item == null) {
+                        // 没有找到商品对象，显示提示信息
+                        System.out.println("无效的商品编号，请重新输入");
+                        browseItems(); // 重新浏览商品
+                    } else {
+                        // 找到商品对象，让用户输入购买数量
+                        System.out.println("请输入你要购买的数量：");
+                        int quantity = scanner.nextInt();
+                        scanner.nextLine(); // 消除回车
+                        if (quantity <= 0) {
+                            // 购买数量不合法，显示提示信息
+                            System.out.println("无效的购买数量，请重新输入");
+                            browseItems(); // 重新浏览商品
                         } else {
-                            // 找到商品对象，让用户选择是修改还是删除
-                            System.out.println("请选择你要进行的操作：");
-                            System.out.println("1. 修改数量");
-                            System.out.println("2. 删除商品");
-                            int choice = scanner.nextInt();
-                            scanner.nextLine(); // 消除回车
-                            switch (choice) {
-                                case 1:
-                                    // 修改数量，让用户输入新的数量
-                                    System.out.println("请输入新的数量：");
-                                    int quantity = scanner.nextInt();
-                                    scanner.nextLine(); // 消除回车
-                                    if (quantity <= 0) {
-                                        // 新的数量不合法，显示提示信息
-                                        System.out.println("无效的数量，请重新输入");
-                                        viewCart(); // 重新查看购物车
-                                    } else {
-                                        // 新的数量合法，调用用户对象的修改购物车方法
-                                        modifyCart(id, quantity);
-                                        // 显示修改成功信息
-                                        System.out.println("已将" + item.getName() + "的数量修改为" + quantity);
-                                        viewCart(); // 重新查看购物车
-                                    }
-                                    break;
-                                case 2:
-                                    // 删除商品，调用用户对象的从购物车中移除方法
-                                    removeFromCart(item);
-                                    // 显示删除成功信息
-                                    System.out.println("已将" + item.getName() + "从购物车中移除");
-                                    viewCart(); // 重新查看购物车
-                                    break;
-                                default:
-                                    System.out.println("无效的输入，请重新输入");
-                                    viewCart(); // 重新查看购物车
-                                    break;
-                            }
+                            // 购买数量合法，设置商品对象的数量属性
+                            item.setQuantity(quantity);
+                            // 调用用户对象的添加到购物车方法
+                            addToCart(item);
+                            // 显示添加成功信息
+                            System.out.println("已将" + item.getName() + "添加到购物车");
+                            browseItems(); // 重新浏览商品
                         }
                     }
                 }
             }
-        
-            // 结账的方法，调用用户对象的模拟结账方法，并显示结账结果
-            public void checkoutMenu() {
-                
-               if (checkout()) {
-                   // 结账成功，显示结账结果
-                   System.out.println("结账成功，感谢你的购买");
-               } else {
-                   // 结账失败，显示结账结果
-                   System.out.println("结账失败，你的购物车为空或数据库操作异常");
-               }
-                
-                shopping(); // 返回购物界面
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("数据库操作异常，请稍后重试");
+            shopping(); // 返回购物界面
+        }
+
+    }
+
+    // 查看购物车的方法，获取用户对象的购物车列表，并显示在控制台，让用户选择是否修改或删除购物车中的商品或返回上一级
+    public void viewCart() {
+        List<Item> cart = getCart(); // 获取用户对象的购物车列表
+        if (cart.isEmpty()) {
+            // 购物车列表为空，显示提示信息
+            System.out.println("你的购物车为空，请先添加商品");
+            shopping(); // 返回购物界面
+        } else {
+            // 购物车列表不为空，显示购物车信息
+            System.out.println("以下是你的购物车信息：");
+            for (Item item : cart) {
+                System.out.println(item);
+            }
+            // 让用户选择是否修改或删除购物车中的商品
+            System.out.println("请输入你要修改或删除的商品编号，或输入0返回：");
+            int id = scanner.nextInt();
+            scanner.nextLine(); // 消除回车
+            if (id == 0) {
+                // 返回上一级
+                shopping();
+            } else {
+                // 查找商品对象
+                Item item = null;
+                for (Item i : cart) {
+                    if (i.getId() == id) {
+                        // 找到商品对象，跳出循环
+                        item = i;
+                        break;
+                    }
+                }
+                if (item == null) {
+                    // 没有找到商品对象，显示提示信息
+                    System.out.println("无效的商品编号，请重新输入");
+                    viewCart(); // 重新查看购物车
+                } else {
+                    // 找到商品对象，让用户选择是修改还是删除
+                    System.out.println("请选择你要进行的操作：");
+                    System.out.println("1. 修改数量");
+                    System.out.println("2. 删除商品");
+                    int choice = scanner.nextInt();
+                    scanner.nextLine(); // 消除回车
+                    switch (choice) {
+                        case 1:
+                            // 修改数量，让用户输入新的数量
+                            System.out.println("请输入新的数量：");
+                            int quantity = scanner.nextInt();
+                            scanner.nextLine(); // 消除回车
+                            if (quantity <= 0) {
+                                // 新的数量不合法，显示提示信息
+                                System.out.println("无效的数量，请重新输入");
+                                viewCart(); // 重新查看购物车
+                            } else {
+                                // 新的数量合法，调用用户对象的修改购物车方法
+                                modifyCart(id, quantity);
+                                // 显示修改成功信息
+                                System.out.println("已将" + item.getName() + "的数量修改为" + quantity);
+                                viewCart(); // 重新查看购物车
+                            }
+                            break;
+                        case 2:
+                            // 删除商品，调用用户对象的从购物车中移除方法
+                            removeFromCart(item);
+                            // 显示删除成功信息
+                            System.out.println("已将" + item.getName() + "从购物车中移除");
+                            viewCart(); // 重新查看购物车
+                            break;
+                        default:
+                            System.out.println("无效的输入，请重新输入");
+                            viewCart(); // 重新查看购物车
+                            break;
+                    }
+                }
             }
         }
-    
+    }
+
+    // 结账的方法，调用用户对象的模拟结账方法，并显示结账结果
+    public void checkoutMenu() {
+
+        if (checkout()) {
+            // 结账成功，显示结账结果
+            System.out.println("结账成功，感谢你的购买");
+        } else {
+            // 结账失败，显示结账结果
+            System.out.println("结账失败，你的购物车为空或数据库操作异常");
+        }
+
+        shopping(); // 返回购物界面
+    }
+}

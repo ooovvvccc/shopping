@@ -37,32 +37,29 @@ public class ShoppingApp {
 
     // 开始程序的方法，显示欢迎信息和选项菜单
     public void start() {
-        System.out.println("欢迎使用购物平台小程序，当前在第一级界面");
+        System.out.println("****欢迎使用购物平台小程序****");
+        System.out.println("*******当前在第一级界面*******");
         System.out.println("请选择你的身份：");
         System.out.println("1. 管理员");
         System.out.println("2. 用户");
         System.out.println("3. 退出");
         int choice = scanner.nextInt();
-        scanner.nextLine(); // 消除回车
-        switch (choice) {
-            case 1:
+        scanner.nextLine(); 
+        if(choice==1) 
                 adminMenu();
-                break;
-            case 2:
+        else if(choice==2)
                 useMenu();
-                break;
-            case 3:
+        else if(choice==3)
                 exit(); // 退出程序
-                break;
-            default:
-                System.out.println("无效的输入，请重新输入");
-                start(); // 重新开始
-                break;
+        else{
+            System.out.println("无效的输入，请重新输入");
+            start(); // 重新开始
         }
     }
 
     public void adminMenu() {
-        System.out.println("身份：管理员，当前在第二级界面");
+        System.out.println("*********管理员系统**********");
+        System.out.println("*******当前在第二级界面*******");
         System.out.println("1. 登录");
         System.out.println("2. 返回上一级");
         System.out.println("3. 退出");
@@ -93,7 +90,8 @@ public class ShoppingApp {
     }
 
     public void useMenu() {
-        System.out.println("身份：用户，当前在第二级界面");
+        System.out.println("**********用户系统***********");
+        System.out.println("*******当前在第二级界面*******");
         System.out.println("1. 登录");
         System.out.println("2. 注册");
         System.out.println("3. 返回上一级");
@@ -136,7 +134,8 @@ public class ShoppingApp {
 
     // 退出程序的方法，显示结束信息并关闭输入扫描器
     public void exit() {
-        System.out.println("感谢使用购物平台小程序，再见！");
         scanner.close();
+        System.out.println("感谢使用购物平台小程序，再见！");
+        
     }
 }

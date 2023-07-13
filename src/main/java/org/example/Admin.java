@@ -1,14 +1,14 @@
 package org.example;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
 
 public class Admin {
+
     // 属性
     private String username; // 用户名
     private String password; // 密码
@@ -23,6 +23,22 @@ public class Admin {
         this.loggedIn = false;
         this.dbHelper = new DBHelper();
         this.scanner = new Scanner(System.in);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean adminLogin() {
@@ -50,7 +66,9 @@ public class Admin {
 
     // 管理员界面的方法，显示管理员选项菜单，并根据选择执行相应操作
     public void adminMenu() {
-        System.out.println("目前在第三级界面，请选择你要进行的操作：");
+        System.out.println("*********管理员系统**********");
+        System.out.println("*******当前在第三级界面*******");
+        System.out.println("请选择你要进行的操作：");
         System.out.println("1. 密码管理");
         System.out.println("2. 客户管理");
         System.out.println("3. 商品管理");
@@ -79,7 +97,9 @@ public class Admin {
 
     // 密码管理的方法，显示密码管理选项菜单，并根据选择执行相应操作
     public void adminPassword() {
-        System.out.println("目前在第四级界面，请选择你要进行的操作：");
+        System.out.println("*********管理员系统**********");
+        System.out.println("*******当前在第四级界面*******");
+        System.out.println("请选择你要进行的操作：");
         System.out.println("1. 修改自身密码");
         System.out.println("2. 重置用户密码");
         System.out.println("3. 返回上一级菜单");
@@ -140,7 +160,7 @@ public class Admin {
 
     // 重置用户密码的方法，接收用户名和新密码，并更新数据库中的密码
     public void resetPassword() {
-        System.out.println("请输入要重置密码的用户用户名：");
+        System.out.println("请输入要重置密码的用户名：");
         String username = scanner.nextLine();
         System.out.println("请输入新密码：");
         String newPassword = scanner.nextLine();
@@ -170,7 +190,9 @@ public class Admin {
 
     // 客户管理的方法，显示客户管理选项菜单，并根据选择执行相应操作
     public void adminCustomer() {
-        System.out.println("目前在第四级界面，请选择你要进行的操作：");
+        System.out.println("*********管理员系统**********");
+        System.out.println("*******当前在第四级界面*******");
+        System.out.println("请选择你要进行的操作：");
         System.out.println("1. 列出所有客户信息");
         System.out.println("2. 删除客户信息");
         System.out.println("3. 查询客户信息");
@@ -287,7 +309,9 @@ public class Admin {
 
     // 商品管理的方法，显示商品管理选项菜单，并根据选择执行相应操作
     public void adminProduct() {
-        System.out.println("目前在第四级界面，请选择你要进行的操作：");
+        System.out.println("*********管理员系统**********");
+        System.out.println("*******当前在第四级界面*******");
+        System.out.println("请选择你要进行的操作：");
         System.out.println("1. 列出所有商品信息");
         System.out.println("2. 添加商品信息");
         System.out.println("3. 修改商品信息");
@@ -342,7 +366,7 @@ public class Admin {
                 String name = rs.getString("name");
                 double price = rs.getDouble("price");
                 int stock = rs.getInt("stock");
-                System.out.println(id + "\t" + name + "\t" + price + "\t" + stock);
+                System.out.println(id + "\t" + name + "\t\t" + price + "\t\t" + stock);
             }
             // 关闭资源
             rs.close();
@@ -525,7 +549,7 @@ public class Admin {
     public void exit() {
         this.loggedIn = false;
         System.out.println("退出登录成功");
-        ShoppingApp shopping=new ShoppingApp();
+        ShoppingApp shopping = new ShoppingApp();
         shopping.start(); // 返回开始界面
     }
 
