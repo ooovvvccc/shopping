@@ -107,7 +107,9 @@ public class ShoppingApp {
                 System.out.println("请输入用户密码：");
                 String password = scanner.nextLine();
                 User user1 = new User(userName, password);
-                user1.login();
+                if (user1.login()) {
+                    user1.userMenu();
+                }
                 break;
             case 2:
                 System.out.println("请输入用户名：");
@@ -115,7 +117,9 @@ public class ShoppingApp {
                 System.out.println("请输入用户密码：");
                 String password2 = scanner.nextLine();
                 User user2 = new User(userName2, password2);
-                user2.register();
+                if (user2.register()) {
+                    user2.userMenu();
+                }
                 break;
             case 3:
                 start();

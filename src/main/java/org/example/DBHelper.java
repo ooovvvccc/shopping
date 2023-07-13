@@ -4,7 +4,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.List;
+import java.util.ArrayList;
+import java.sql.PreparedStatement;
 public class DBHelper {
     // 定义数据库地址、表名等常量
     public static final String DB_URL = "jdbc:sqlite:shopping.db";
@@ -86,4 +88,24 @@ public class DBHelper {
             e.printStackTrace();
         }
     }
+    // 在DBHelper类中添加一个getAllItems()方法
+public List<Item> getAllItems() {
+    List<Item> items = new ArrayList<>(); // 创建一个空的List对象
+    String sql = "SELECT * FROM " + PRODUCT_TABLE; // 定义查询语句
+    try {
+        PreparedStatement ps = conn.prepareStatement(sql); // 创建PreparedStatement对象
+        rs = ps.executeQuery(); // 执行查询语句，返回ResultSet对象
+        while (rs.next()) { // 遍历ResultSet对象
+            int id = rs.getInt("id"); // 获取商品id
+            String name = rs.getString("name"); // 获取商品名称
+            double price = rs.getDouble("price"); // 获取商品价格
+            int stock = rs.getInt("stock"); // 获取商品库存
+            Item item = new Item(id, name, price, stock); // 创建Item对象，quantity默认为0
+            items.add(item); // 将Item对象添加到List中
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return items; // 返回List对象
+}
 }

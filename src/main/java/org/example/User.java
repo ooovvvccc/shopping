@@ -317,12 +317,15 @@ public class User {
                 switch (choice) {
                     case 1:
                         passwordManage(); // 密码管理
+                        userMenu();
                         break;
                     case 2:
                         shopping(); // 购物
+                        userMenu();
                         break;
                     case 3:
                         viewHistory(); // 查看购物历史
+                        userMenu();
                         break;
                     case 4:
                         logout(); // 退出登录
@@ -345,9 +348,11 @@ public class User {
                 switch (choice) {
                     case 1:
                         changePasswordMenu(); // 修改密码菜单
+                        userMenu();
                         break;
                     case 2:
                         resetPasswordMenu(); // 重置密码菜单
+                        userMenu();
                         break;
                     case 3:
                         userMenu(); // 返回用户菜单
@@ -370,6 +375,7 @@ public class User {
                    // 修改成功，显示提示信息并返回密码管理界面
                    System.out.println("你已成功修改密码，请牢记你的新密码");
                    passwordManage();
+                   userMenu();
                } else {
                    // 修改失败，显示提示信息并返回修改密码菜单
                    System.out.println("你输入的旧密码错误，请重新输入");
@@ -385,10 +391,12 @@ public class User {
                    // 重置成功，显示提示信息并返回密码管理界面
                    System.out.println("你已成功重置密码，请牢记你的新密码");
                    passwordManage();
+                   userMenu();
                } else {
                    // 重置失败，显示提示信息并返回重置密码菜单
                    System.out.println("重置密码失败，请稍后重试或联系管理员");
                    resetPasswordMenu();
+                   userMenu();
                }
                 
             }
@@ -405,12 +413,15 @@ public class User {
                 switch (choice) {
                     case 1:
                         browseItems(); // 浏览商品
+                        shopping();
                         break;
                     case 2:
                         viewCart(); // 查看购物车
+                        shopping();
                         break;
                     case 3:
                         checkout(); // 结账
+                        shopping();
                         break;
                     case 4:
                         userMenu(); // 返回用户菜单
@@ -430,6 +441,7 @@ public class User {
                    if (items.isEmpty()) {
                        // 商品列表为空，显示提示信息
                        System.out.println("暂无商品信息，请联系管理员添加商品");
+                       shopping();
                    } else {
                        // 商品列表不为空，显示商品信息
                        System.out.println("以下是所有商品信息：");
@@ -478,7 +490,7 @@ public class User {
                            }
                        }
                    }
-               } catch (SQLException e) {
+               } catch (Exception e) {
                    e.printStackTrace();
                    System.out.println("数据库操作异常，请稍后重试");
                    shopping(); // 返回购物界面
