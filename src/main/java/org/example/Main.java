@@ -1,6 +1,5 @@
 package org.example;
 
-
 public class Main {
     public static void main(String[] args) {
         DBHelper dbHelper = new DBHelper(); // 创建一个DBHelper对象

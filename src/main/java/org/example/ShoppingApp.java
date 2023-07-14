@@ -9,30 +9,7 @@ public class ShoppingApp {
 
     ShoppingApp() {
         scanner = new Scanner(System.in);
-        try {
-            // 创建一个DBHelper对象
-            dbHelper = new DBHelper();
-            // 测试数据库操作
-            testDB();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // 测试数据库操作的方法
-    private void testDB() throws SQLException {
-        // 使用DBHelper对象获取数据库连接对象
-        Connection connection = dbHelper.getConnection();
-        // 使用Statement或PreparedStatement对象来执行SQL语句
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT EMPNAME FROM EMPLOYEEDETAILS");
-        // 使用ResultSet对象来获取查询结果
-        while (resultSet.next()) {
-            System.out.println("EMPLOYEE NAME:" + resultSet.getString("EMPNAME"));
-        }
-        // 关闭资源
-        resultSet.close();
-        statement.close();
+        dbHelper = new DBHelper();
     }
 
     // 开始程序的方法，显示欢迎信息和选项菜单

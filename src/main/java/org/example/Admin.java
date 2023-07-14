@@ -1,11 +1,14 @@
 package org.example;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Admin {
 
@@ -42,27 +45,21 @@ public class Admin {
     }
 
     public boolean adminLogin() {
-        try {
-            Connection connection = dbHelper.getConnection();
-            String adminTable = dbHelper.ADMIN_TABLE;
-            String sql = "SELECT * FROM " + adminTable + " WHERE username = ? AND password = ?;";
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return true;
-            } else {
-                System.out.println("用户名或密码错误，请重新输入");
-                ShoppingApp shopping = new ShoppingApp();
-                shopping.start();
-                return false;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        //从文本文件中读取所有的管理员信息，并存储到一个ArrayList对象中
+        ArrayList<Admin> admins = dbHelper.readAdmins("admins.txt");
+        //循环遍历ArrayList中的每个Admin对象
+        for (Admin admin : admins) {
+          //如果用户名和密码匹配，返回true
+          if (admin.getUsername().equals(this.username) && admin.getPassword().equals(this.password)) {
+            return true;
+          }
         }
-    }
+        //如果没有匹配的管理员信息，打印提示信息，并重新开始购物管理系统
+        System.out.println("用户名或密码错误，请重新输入");
+        ShoppingApp shopping = new ShoppingApp();
+        shopping.start();
+        return false;
+      }
 
     // 管理员界面的方法，显示管理员选项菜单，并根据选择执行相应操作
     public void adminMenu() {
@@ -122,41 +119,34 @@ public class Admin {
         }
     }
 
-    // 修改自身密码的方法，接收旧密码和新密码，并更新数据库中的密码
     public void changePassword() {
         System.out.println("请输入旧密码：");
         String oldPassword = scanner.nextLine();
-        if (oldPassword.equals(this.password)) { // 验证旧密码是否正确
-            System.out.println("请输入新密码：");
-            String newPassword = scanner.nextLine();
-            try {
-                // 使用DBHelper对象获取数据库连接对象和表名
-                Connection connection = dbHelper.getConnection();
-                String adminTable = dbHelper.ADMIN_TABLE;
-                // 构造更新语句，使用占位符防止SQL注入攻击
-                String sql = "UPDATE " + adminTable + " SET password = ? WHERE username = ?;";
-                // 使用连接对象创建预编译语句对象，并设置参数值
-                PreparedStatement pstmt = connection.prepareStatement(sql);
-                pstmt.setString(1, newPassword);
-                pstmt.setString(2, this.username);
-                // 执行更新语句，返回受影响的行数
-                int rows = pstmt.executeUpdate();
-                if (rows > 0) {
-                    System.out.println("修改密码成功");
-                    this.password = newPassword; // 更新属性值
-                    adminPassword(); // 返回密码管理菜单
-                } else {
-                    System.out.println("修改密码失败");
-                    changePassword(); // 重新修改密码
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        if (oldPassword.equals(this.password)) {
+          System.out.println("请输入新密码：");
+          String newPassword = scanner.nextLine();
+          //从文本文件中读取所有的管理员信息，并存储到一个ArrayList对象中
+          ArrayList<Admin> admins = dbHelper.readAdmins("admins.txt");
+          //循环遍历ArrayList中的每个Admin对象
+          for (Admin admin : admins) {
+            //如果用户名匹配，修改密码，并写入到文本文件中
+            if (admin.getUsername().equals(this.username)) {
+              admin.setPassword(newPassword);
+              dbHelper.writeAdmins("admins.txt", admins);
+              System.out.println("修改密码成功");
+              this.password = newPassword;
+              adminPassword();
+              return;
             }
+          }
+          //如果没有匹配的管理员信息，打印提示信息，并重新修改密码
+          System.out.println("修改密码失败");
+          changePassword();
         } else {
-            System.out.println("旧密码错误，请重新输入");
-            changePassword(); // 重新修改密码
+          System.out.println("旧密码错误，请重新输入");
+          changePassword();
         }
-    }
+      }
 
     // 重置用户密码的方法，接收用户名和新密码，并更新数据库中的密码
     public void resetPassword() {
@@ -164,30 +154,22 @@ public class Admin {
         String username = scanner.nextLine();
         System.out.println("请输入新密码：");
         String newPassword = scanner.nextLine();
-        try {
-            // 使用DBHelper对象获取数据库连接对象和表名
-            Connection connection = dbHelper.getConnection();
-            String userTable = dbHelper.USER_TABLE;
-            // 构造更新语句，使用占位符防止SQL注入攻击
-            String sql = "UPDATE " + userTable + " SET password = ? WHERE username = ?;";
-            // 使用连接对象创建预编译语句对象，并设置参数值
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, newPassword);
-            pstmt.setString(2, username);
-            // 执行更新语句，返回受影响的行数
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                System.out.println("重置用户" + username + "的密码成功");
-                adminPassword(); // 返回密码管理菜单
-            } else {
-                System.out.println("重置用户" + username + "的密码失败，可能不存在这个用户");
-                resetPassword(); // 重新重置密码
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //从文本文件中读取所有的用户信息，并存储到一个ArrayList对象中
+        ArrayList<User> users = dbHelper.readUsers("users.txt");
+        //循环遍历ArrayList中的每个User对象
+        for (User user : users) {
+          //如果用户名匹配，修改密码，并写入到文本文件中
+          if (user.getUsername().equals(username)) {
+            user.setPassword(newPassword);
+            dbHelper.writeUsers("users.txt", users);
+            System.out.println("重置用户" + username + "的密码成功");
+            adminPassword();
+            return;
+          }
         }
-    }
-
+        System.out.println("重置用户" + username + "的密码失败，可能不存在这个用户");
+  resetPassword();
+}
     // 客户管理的方法，显示客户管理选项菜单，并根据选择执行相应操作
     public void adminCustomer() {
         System.out.println("*********管理员系统**********");
@@ -221,91 +203,66 @@ public class Admin {
 
     // 列出所有客户信息的方法，从数据库中查询所有用户表的数据，并打印出来
     public void listCustomers() {
-        try {
-            // 使用DBHelper对象获取数据库连接对象和表名
-            Connection connection = dbHelper.getConnection();
-            String userTable = dbHelper.USER_TABLE;
-            // 构造查询语句，查询所有用户表的数据
-            String sql = "SELECT * FROM " + userTable + ";";
-            // 使用连接对象创建语句对象
-            Statement stmt = connection.createStatement();
-            // 执行查询语句，获取结果集对象
-            ResultSet rs = stmt.executeQuery(sql);
-            // 打印表头
-            System.out.println("用户ID\t用户名\t密码");
-            // 遍历结果集，打印每一行数据
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-                System.out.println(id + "\t" + username + "\t" + password);
-            }
-            // 关闭资源
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //从文本文件中读取所有的用户信息，并存储到一个ArrayList对象中
+        ArrayList<User> users = dbHelper.readUsers("users.txt");
+        //打印表头
+        System.out.println("用户ID\t用户名\t密码");
+        //循环遍历ArrayList中的每个User对象
+        for (User user : users) {
+          //打印用户信息
+          System.out.println(user.getId() + "\t" + user.getUsername() + "\t" + user.getPassword());
         }
-        adminCustomer(); // 返回客户管理菜单
-    }
+        adminCustomer();
+      }
 
     // 删除客户信息的方法，接收用户名，并从数据库中删除对应的用户数据
     public void deleteCustomer() {
         System.out.println("请输入要删除的客户用户名：");
         String username = scanner.nextLine();
-        try {
-            // 使用DBHelper对象获取数据库连接对象和表名
-            Connection connection = dbHelper.getConnection();
-            String userTable = dbHelper.USER_TABLE;
-            // 构造删除语句，使用占位符防止SQL注入攻击
-            String sql = "DELETE FROM " + userTable + " WHERE username = ?;";
-            // 使用连接对象创建预编译语句对象，并设置参数值
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, username);
-            // 执行删除语句，返回受影响的行数
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                System.out.println("删除客户" + username + "成功");
-                adminCustomer(); // 返回客户管理菜单
-            } else {
-                System.out.println("删除客户" + username + "失败，可能不存在这个客户");
-                deleteCustomer(); // 重新删除客户
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //从文本文件中读取所有的用户信息，并存储到一个ArrayList对象中
+        ArrayList<User> users = dbHelper.readUsers("users.txt");
+        //创建一个标志变量，用于判断是否删除成功
+        boolean deleted = false;
+        //循环遍历ArrayList中的每个User对象
+        for (int i = 0; i < users.size(); i++) {
+          //如果用户名匹配，删除该User对象，并写入到文本文件中
+          if (users.get(i).getUsername().equals(username)) {
+            users.remove(i);
+            dbHelper.writeUsers("users.txt", users);
+            System.out.println("删除客户" + username + "成功");
+            deleted = true;
+            adminCustomer();
+            break;
+          }
         }
-    }
+        //如果没有匹配的用户信息，打印提示信息，并重新删除客户
+        if (!deleted) {
+          System.out.println("删除客户" + username + "失败，可能不存在这个客户");
+          deleteCustomer();
+        }
+      }
 
     // 查询客户信息的方法，接收用户名，并从数据库中查询对应的用户数据，并打印出来
     public void queryCustomer() {
         System.out.println("请输入要查询的客户用户名：");
         String username = scanner.nextLine();
-        try {
-            // 使用DBHelper对象获取数据库连接对象和表名
-            Connection connection = dbHelper.getConnection();
-            String userTable = dbHelper.USER_TABLE;
-            // 构造查询语句，使用占位符防止SQL注入攻击
-            String sql = "SELECT * FROM " + userTable + " WHERE username = ?;";
-            // 使用连接对象创建预编译语句对象，并设置参数值
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, username);
-            // 执行查询语句，获取结果集对象
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) { // 如果有结果，打印出来
-                int id = rs.getInt("id");
-                String password = rs.getString("password");
-                System.out.println("用户ID：" + id);
-                System.out.println("用户名：" + username);
-                System.out.println("密码：" + password);
-                adminCustomer(); // 返回客户管理菜单
-            } else { // 如果没有结果，提示用户不存在
-                System.out.println("不存在用户名为" + username + "的客户");
-                queryCustomer(); // 重新查询客户
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //从文本文件中读取所有的用户信息，并存储到一个ArrayList对象中
+        ArrayList<User> users = dbHelper.readUsers("users.txt");
+        //循环遍历ArrayList中的每个User对象
+        for (User user : users) {
+          //如果用户名匹配，打印用户信息
+          if (user.getUsername().equals(username)) {
+            System.out.println("用户ID：" + user.getId());
+            System.out.println("用户名：" + user.getUsername());
+            System.out.println("密码：" + user.getPassword());
+            adminCustomer();
+            return;
+          }
         }
-    }
+        //如果没有匹配的用户信息，打印提示信息，并重新查询客户
+        System.out.println("不存在用户名为" + username + "的客户");
+        queryCustomer();
+      }
 
     // 商品管理的方法，显示商品管理选项菜单，并根据选择执行相应操作
     public void adminProduct() {
@@ -347,49 +304,14 @@ public class Admin {
     }
 
     // 列出所有商品信息的方法，从数据库中查询所有商品表的数据，并打印出来
-    public void listProducts() {
-        try {
-            // 使用DBHelper对象获取数据库连接对象和表名
-            Connection connection = dbHelper.getConnection();
-            String productTable = dbHelper.PRODUCT_TABLE;
-            // 构造查询语句，查询所有商品表的数据
-            String sql = "SELECT * FROM " + productTable + ";";
-            // 使用连接对象创建语句对象
-            Statement stmt = connection.createStatement();
-            // 执行查询语句，获取结果集对象
-            ResultSet rs = stmt.executeQuery(sql);
-            // 打印表头
-            System.out.println("商品ID\t商品名称\t商品价格\t商品库存");
-            // 遍历结果集，打印每一行数据
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                double price = rs.getDouble("price");
-                int stock = rs.getInt("stock");
-                System.out.println(id + "\t" + name + "\t\t" + price + "\t\t" + stock);
-            }
-            // 关闭资源
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        adminProduct(); // 返回商品管理菜单
-    }
+    public void listProducts() {try {Connection connection = dbHelper.getConnection();String productTable = dbHelper.PRODUCT_TABLE;String sql = "SELECT * FROM " + productTable + ";";Statement stmt = connection.createStatement();ResultSet rs = stmt.executeQuery(sql);System.out.println("商品ID\t商品名称\t商品价格\t商品库存");while (rs.next()) {int id = rs.getInt("id");String name = rs.getString("name");double price = rs.getDouble("price");int stock = rs.getInt("stock");System.out.println(id + "\t" + name + "\t\t" + price + "\t\t" + stock);}rs.close();stmt.close();} catch (SQLException e) {e.printStackTrace();}adminProduct(); }
 
     // 添加商品信息的方法，接收商品名称、价格和库存，并插入到数据库中
-    public void addProduct() {
-        System.out.println("请输入要添加的商品名称：");
-        String name = scanner.nextLine();
-        System.out.println("请输入要添加的商品价格：");
-        double price = scanner.nextDouble();
-        scanner.nextLine(); // 消除回车
-        System.out.println("请输入要添加的商品库存：");
-        int stock = scanner.nextInt();
-        scanner.nextLine(); // 消除回车
-        try {
-            // 使用DBHelper对象获取数据库连接对象和表名
-            Connection connection = dbHelper.getConnection();
+    public void addProduct() {System.out.println("请输入要添加的商品名称：");
+        String name = scanner.nextLine();System.out.println("请输入要添加的商品价格：");double price = scanner.nextDouble();
+        scanner.nextLine(); System.out.println("请输入要添加的商品库存：");int stock = scanner.nextInt();
+        scanner.nextLine(); try {
+        Connection connection = dbHelper.getConnection();
             String productTable = dbHelper.PRODUCT_TABLE;
             // 构造插入语句，使用占位符防止SQL注入攻击
             String sql = "INSERT INTO " + productTable + " (name, price, stock) VALUES (?, ?, ?);";
