@@ -101,21 +101,35 @@ public class ShoppingApp {
         switch (choice) {
             case 1:
                 System.out.println("请输入用户名：");
-                String userName = scanner.nextLine();
+                String username = scanner.nextLine();
                 System.out.println("请输入用户密码：");
                 String password = scanner.nextLine();
-                User user1 = new User(userName, password);
+                User user1 = new User(username, password);
                 if (user1.login()) {
                     user1.userMenu();
                 }
                 break;
             case 2:
-                System.out.println("请输入用户名：");
-                String userName2 = scanner.nextLine();
-                System.out.println("请输入用户密码：");
+                System.out.println("请输入用户名(不少于5个字符)：");
+                String username2 = scanner.nextLine();
+                while (username2.length() < 5) {
+                    System.out.println("用户名长度不能少于5个字符");
+                    System.out.println("请重新输入用户名：");
+                    username2 = scanner.nextLine();
+                }
+                System.out.println("请输入用户密码（大于8个字符，）：");
                 String password2 = scanner.nextLine();
-                User user2 = new User(userName2, password2);
-                if (user2.register()) {
+                while (password2.length() < 8||password2.length()==8||!password2.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&.,/|}{#-+=1])[A-Za-z\\d@$!%*?&.,/|}{#-+=]+$")) {
+                    System.out.println("密码长度要大于8个字符并且包含大小写字母、数字和标点符号");
+                    System.out.println("请重新输入密码：");
+                    password2 = scanner.nextLine();
+                }
+                System.out.println("请输入电话号码：");
+                String phoneNumber2 = scanner.nextLine();
+                System.out.println("邮箱：");
+                String email2 = scanner.nextLine();
+                User user2 = new User(username2, password2);
+                if (user2.register(email2,phoneNumber2)) {
                     user2.userMenu();
                 }
                 break;

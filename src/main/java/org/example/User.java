@@ -10,18 +10,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.sql.Statement;
 
 public class User {
-    // 属性
-    private int id; // 用户id
-    private String username; // 用户名
-    private String password; // 密码
-    private boolean loggedIn; // 登录状态
-    private DBHelper dbHelper; // 数据库操作对象
-    private List<Item> cart; // 购物车列表
-    private Scanner scanner; // 输入扫描器
+    private int id;
+    private String username;
+    private String password;
+    private boolean loggedIn;
+    private DBHelper dbHelper;
+    private List<Item> cart;
+    private Scanner scanner;
+    private int level;
+    ShoppingApp s = new ShoppingApp();
 
-    // 构造方法，接收用户名和密码作为参数，并创建数据库操作对象和购物车列表对象和输入扫描器对象
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -30,30 +31,32 @@ public class User {
         this.cart = new ArrayList<>();
         this.scanner = new Scanner(System.in);
     }
-    ShoppingApp s=new ShoppingApp();
 
-    // 注册方法，返回布尔值表示是否注册成功
-    public boolean register() {
+    public boolean register(String email, String phoneNumber) {
+        level = 1;
         try {
-            // 使用DBHelper对象获取数据库连接对象和表名
             Connection connection = dbHelper.getConnection();
             String userTable = dbHelper.USER_TABLE;
-            // 构造插入语句，使用占位符防止SQL注入攻击
-            String sql = "INSERT INTO " + userTable + " (username, password) VALUES (?, ?);";
-            // 使用连接对象创建预编译语句对象，并设置参数值
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            // 执行插入语句，获取影响的行数
-            int rows = pstmt.executeUpdate();
-            if (rows > 0) {
-                return true; // 注册成功，返回true
-            } else {
-                return false; // 注册失败，返回false
+            String sql = "INSERT INTO " + userTable + " (username, password, email, phoneNumber, registerTime, level) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); // use Statement.RETURN_GENERATED_KEYS to get the auto-generated id
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, email);
+            ps.setString(4, phoneNumber);
+            ps.setString(5, new Date().toString()); // use the current date as the register time
+            ps.setInt(6, level);
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys(); // get the generated keys
+            if (rs.next()) {
+                id = rs.getInt(1); // assign the generated id to the user object
             }
+            rs.close(); // close the result set
+            ps.close(); // close the prepared statement
+            connection.close(); // close the connection
+            return true; // return true to indicate success
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // 发生异常，返回false
+            return false; // return false to indicate failure
         }
     }
 
@@ -415,7 +418,7 @@ public class User {
         System.out.println("1. 浏览商品");
         System.out.println("2. 查看购物车");
         System.out.println("3. 结账");
-        System.out.println("4.查看购物历史");
+        System.out.println("4. 查看购物历史");
         System.out.println("5. 返回上一级");
         int choice = scanner.nextInt();
         scanner.nextLine(); // 消除回车
