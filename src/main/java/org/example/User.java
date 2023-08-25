@@ -20,8 +20,10 @@ public class User {
     private DBHelper dbHelper;
     private List<Item> cart;
     private Scanner scanner;
-    private int level;
-    ShoppingApp s = new ShoppingApp();
+    private String email;
+    private String phoneNumber;
+    private String level;
+    private String registerTime;
 
     public User(String username, String password) {
         this.username = username;
@@ -31,34 +33,33 @@ public class User {
         this.cart = new ArrayList<>();
         this.scanner = new Scanner(System.in);
     }
+    ShoppingApp s=new ShoppingApp();
 
-    public boolean register(String email, String phoneNumber) {
-        level = 1;
+    // 注册方法，返回布尔值表示是否注册成功
+    public boolean register() {
         try {
+            // 使用DBHelper对象获取数据库连接对象和表名
             Connection connection = dbHelper.getConnection();
             String userTable = dbHelper.USER_TABLE;
-            String sql = "INSERT INTO " + userTable + " (username, password, email, phoneNumber, registerTime, level) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); // use Statement.RETURN_GENERATED_KEYS to get the auto-generated id
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ps.setString(3, email);
-            ps.setString(4, phoneNumber);
-            ps.setString(5, new Date().toString()); // use the current date as the register time
-            ps.setInt(6, level);
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys(); // get the generated keys
-            if (rs.next()) {
-                id = rs.getInt(1); // assign the generated id to the user object
+            // 构造插入语句，使用占位符防止SQL注入攻击
+            String sql = "INSERT INTO " + userTable + " (username, password) VALUES (?, ?);";
+            // 使用连接对象创建预编译语句对象，并设置参数值
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            // 执行插入语句，获取影响的行数
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                return true; // 注册成功，返回true
+            } else {
+                return false; // 注册失败，返回false
             }
-            rs.close(); // close the result set
-            ps.close(); // close the prepared statement
-            connection.close(); // close the connection
-            return true; // return true to indicate success
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // return false to indicate failure
+            return false; // 发生异常，返回false
         }
     }
+
 
     // 登录方法，返回布尔值表示是否登录成功
     public boolean login() {

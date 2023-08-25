@@ -226,13 +226,13 @@ public class Admin {
             Connection connection = dbHelper.getConnection();
             String userTable = dbHelper.USER_TABLE;
             // 构造查询语句，查询所有用户表的数据
-            String sql = "SELECT * FROM " + userTable + ";";
+            String sql = "SELECT id, username, email,phoneNumber ,registerTime ,level FROM " + userTable + ";";
             // 使用连接对象创建语句对象
             Statement stmt = connection.createStatement();
             // 执行查询语句，获取结果集对象
             ResultSet rs = stmt.executeQuery(sql);
             // 打印表头
-            System.out.println("用户ID\t用户名\t密码");
+            System.out.println("用户ID\t用户名\t邮箱\t\t电话\t\t注册时间\t用户级别");
             // 遍历结果集，打印每一行数据
             while (rs.next()) {
                 int id = rs.getInt("id");

@@ -25,14 +25,6 @@ public class ShoppingApp {
         Connection connection = dbHelper.getConnection();
         // 使用Statement或PreparedStatement对象来执行SQL语句
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT EMPNAME FROM EMPLOYEEDETAILS");
-        // 使用ResultSet对象来获取查询结果
-        while (resultSet.next()) {
-            System.out.println("EMPLOYEE NAME:" + resultSet.getString("EMPNAME"));
-        }
-        // 关闭资源
-        resultSet.close();
-        statement.close();
     }
 
     // 开始程序的方法，显示欢迎信息和选项菜单
@@ -104,6 +96,10 @@ public class ShoppingApp {
                 String username = scanner.nextLine();
                 System.out.println("请输入用户密码：");
                 String password = scanner.nextLine();
+                System.out.println("请输入电话号码：");
+                String phoneNumber = scanner.nextLine();
+                System.out.println("邮箱：");
+                String email = scanner.nextLine();
                 User user1 = new User(username, password);
                 if (user1.login()) {
                     user1.userMenu();
@@ -129,7 +125,7 @@ public class ShoppingApp {
                 System.out.println("邮箱：");
                 String email2 = scanner.nextLine();
                 User user2 = new User(username2, password2);
-                if (user2.register(email2,phoneNumber2)) {
+                if (user2.register()) {
                     user2.userMenu();
                 }
                 break;
