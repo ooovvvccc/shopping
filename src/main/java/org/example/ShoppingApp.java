@@ -25,6 +25,14 @@ public class ShoppingApp {
         Connection connection = dbHelper.getConnection();
         // 使用Statement或PreparedStatement对象来执行SQL语句
         Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT EMPNAME FROM EMPLOYEEDETAILS");
+        // 使用ResultSet对象来获取查询结果
+        while (resultSet.next()) {
+            System.out.println("EMPLOYEE NAME:" + resultSet.getString("EMPNAME"));
+        }
+        // 关闭资源
+        resultSet.close();
+        statement.close();
     }
 
     // 开始程序的方法，显示欢迎信息和选项菜单
@@ -93,38 +101,20 @@ public class ShoppingApp {
         switch (choice) {
             case 1:
                 System.out.println("请输入用户名：");
-                String username = scanner.nextLine();
+                String userName = scanner.nextLine();
                 System.out.println("请输入用户密码：");
                 String password = scanner.nextLine();
-                System.out.println("请输入电话号码：");
-                String phoneNumber = scanner.nextLine();
-                System.out.println("邮箱：");
-                String email = scanner.nextLine();
-                User user1 = new User(username, password);
+                User user1 = new User(userName, password);
                 if (user1.login()) {
                     user1.userMenu();
                 }
                 break;
             case 2:
-                System.out.println("请输入用户名(不少于5个字符)：");
-                String username2 = scanner.nextLine();
-                while (username2.length() < 5) {
-                    System.out.println("用户名长度不能少于5个字符");
-                    System.out.println("请重新输入用户名：");
-                    username2 = scanner.nextLine();
-                }
-                System.out.println("请输入用户密码（大于8个字符，）：");
+                System.out.println("请输入用户名：");
+                String userName2 = scanner.nextLine();
+                System.out.println("请输入用户密码：");
                 String password2 = scanner.nextLine();
-                while (password2.length() < 8||password2.length()==8||!password2.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&.,/|}{#-+=1])[A-Za-z\\d@$!%*?&.,/|}{#-+=]+$")) {
-                    System.out.println("密码长度要大于8个字符并且包含大小写字母、数字和标点符号");
-                    System.out.println("请重新输入密码：");
-                    password2 = scanner.nextLine();
-                }
-                System.out.println("请输入电话号码：");
-                String phoneNumber2 = scanner.nextLine();
-                System.out.println("邮箱：");
-                String email2 = scanner.nextLine();
-                User user2 = new User(username2, password2);
+                User user2 = new User(userName2, password2);
                 if (user2.register()) {
                     user2.userMenu();
                 }

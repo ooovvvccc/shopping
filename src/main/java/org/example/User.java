@@ -10,21 +10,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.sql.Statement;
 
 public class User {
-    private int id;
-    private String username;
-    private String password;
-    private boolean loggedIn;
-    private DBHelper dbHelper;
-    private List<Item> cart;
-    private Scanner scanner;
-    private String email;
-    private String phoneNumber;
-    private String level;
-    private String registerTime;
+    // 属性
+    private int id; // 用户id
+    private String username; // 用户名
+    private String password; // 密码
+    private boolean loggedIn; // 登录状态
+    private DBHelper dbHelper; // 数据库操作对象
+    private List<Item> cart; // 购物车列表
+    private Scanner scanner; // 输入扫描器
 
+    // 构造方法，接收用户名和密码作为参数，并创建数据库操作对象和购物车列表对象和输入扫描器对象
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -59,7 +56,6 @@ public class User {
             return false; // 发生异常，返回false
         }
     }
-
 
     // 登录方法，返回布尔值表示是否登录成功
     public boolean login() {
@@ -419,7 +415,7 @@ public class User {
         System.out.println("1. 浏览商品");
         System.out.println("2. 查看购物车");
         System.out.println("3. 结账");
-        System.out.println("4. 查看购物历史");
+        System.out.println("4.查看购物历史");
         System.out.println("5. 返回上一级");
         int choice = scanner.nextInt();
         scanner.nextLine(); // 消除回车
