@@ -43,17 +43,17 @@ public class DBHelper {
     private void createTables() throws SQLException {
         String sql1 = "CREATE TABLE IF NOT EXISTS " + ADMIN_TABLE + " ("
                 + "id INTEGER PRIMARY KEY,"
-                + "username TEXT NOT NULL,"
+                + "username TEXT NOT NULL UNIQUE,"
                 + "password TEXT NOT NULL"
                 + ");";
         String sql2 = "CREATE TABLE IF NOT EXISTS " + USER_TABLE + " ("
                 + "id INTEGER PRIMARY KEY,"
-                + "username TEXT NOT NULL,"
+                + "username TEXT NOT NULL UNIQUE,"
                 + "password TEXT NOT NULL"
                 + ");";
         String sql3 = "CREATE TABLE IF NOT EXISTS " + PRODUCT_TABLE + " ("
                 + "id INTEGER PRIMARY KEY,"
-                + "name TEXT NOT NULL,"
+                + "name TEXT NOT NULL UNIQUE,"
                 + "price REAL NOT NULL,"
                 + "stock INTEGER NOT NULL"
                 + ");";
