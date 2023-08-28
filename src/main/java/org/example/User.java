@@ -46,14 +46,6 @@ public class User {
         return number;
     }
 
-    /* public void resetPassword(){
-        Scanner scanner=new Scanner(System.in);
-        System.out.println("请输入新密码：");
-        String newPassword=scanner.nextLine();//键盘获取新密码
-        setPassword(newPassword);
-        System.out.println("用户密码重置成功！");
-    }*/
-
     public void addProduct(List<Product> products){
         Scanner scanner=new Scanner(System.in);
         boolean index=false;//标识符
