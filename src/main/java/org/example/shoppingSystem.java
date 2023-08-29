@@ -151,12 +151,11 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
         Scanner scanner = new Scanner(System.in);
         int number = 1;//循环标识
         while (number == 1) {
-            System.out.println("***************************************************");
-            System.out.println("             欢迎管理员" + administrator.name);
-            System.out.println("          1.修改自身密码  2.重置用户密码");
-            System.out.println("    3.列出所有客户信息  4.删除客户信息  5.查询客户信息");
-            System.out.println("    6.列出所有商品信息  7.添加商品信息  8.修改商品信息");
-            System.out.println("      9.删除商品信息  10.查询商品信息  11.退出登录");
+            System.out.println("****************管理员系统*************************");
+            System.out.println("1.修改自身密码  2.重置用户密码  3.列出所有客户信息");
+            System.out.println("4.删除客户信息  5.查询客户信息  6.列出所有商品信息");
+            System.out.println("7.添加商品信息  8.修改商品信息  9.删除商品信息");
+            System.out.println("10.查询商品信息 11.退出登录");
             System.out.println("***************************************************");
             System.out.print("请输入指令：");
             int order = 0;//指令值
@@ -212,11 +211,10 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
         Scanner scanner = new Scanner(System.in);
         int number = 1;//循环标识
         while (number == 1) {
-            System.out.println("*********************************************************");
-            System.out.println("              欢迎用户" + user.name);
-            System.out.println("                 1.修改密码");
-            System.out.println("2.将商品加入购物车  3.从购物车中移除商品  4.修改购物车中的商品数量");
-            System.out.println(" 5.展示商品 6.展示购物车 7.模拟结账  8.查看购物历史  9.退出登录");
+            System.out.println("*****************用户系统*****************************");
+            System.out.println("1.修改密码      2.将商品加入购物车  3.从购物车中移除商品");
+            System.out.println("4.展示商品      5.展示购物车        6.模拟结账  ");
+            System.out.println("7.查看购物历史  8.退出登录");
             System.out.println("*********************************************************");
             System.out.print("请输入指令：");
             int order = 0;//指令值
@@ -237,22 +235,18 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                     user.deleteProduct();
                     break;
                 case 4:
-                    user.changeProduct(products);
-                    break;
-                case 5:
                     user.listProduct(products);
                     break;
-                case 6:
+                case 5:
                     user.printProduct();
                     break;
-                case 7:
+                case 6:
                     user.checkout(products);
                     break;
-                case 8:
-                    //user.readTxt();
+                case 7:
                     user.searchShopping(users);
                     break;
-                case 9:
+                case 8:
                     number = 0;
                     System.out.println("已退出登录！");
                     break;
