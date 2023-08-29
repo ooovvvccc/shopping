@@ -291,7 +291,7 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
              }
             public void loadFile(){
             try {
-                FileReader userReader = new FileReader("users.txt");
+                FileReader userReader = new FileReader("users.xlsx");
                 Scanner userScanner = new Scanner(userReader);
                 while (userScanner.hasNextLine()) {
                     String[] userInfo = userScanner.nextLine().split(",");
@@ -304,7 +304,7 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                     user.readTxt();
                 }
 
-                FileReader administratorReader = new FileReader("administrators.txt");
+                FileReader administratorReader = new FileReader("administrators.xlsx");
                 Scanner administratorScanner= new Scanner(administratorReader);
                 while ( administratorScanner.hasNextLine()) {
                     String[] administratorInfo =  administratorScanner.nextLine().split(",");
@@ -313,7 +313,7 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                 }
                 administratorReader.close();
 
-                FileReader productReader = new FileReader("products.txt");
+                FileReader productReader = new FileReader("products.xlsx");
                 Scanner productScanner = new Scanner(productReader);
                 while (productScanner.hasNextLine()) {
                     String[] productInfo = productScanner.nextLine().split(",");
