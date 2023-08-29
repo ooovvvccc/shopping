@@ -180,17 +180,9 @@ public class User {
      System.out.println("购物历史如下：");
      int i=1;
         for (ShoppingCart history : histories) {
-           // for(User user:users) {
-                //if (user.equals(history.userName)) {
                     System.out.println("第" + i + "次订单如下：");
-                    /*for (Product product : history.products) {
-                        System.out.println("商品名称：" + product.name + " 商品单价：" + product.price +
-                                "元 购买商品数量：" + product.count);
-                    }*/
                     i++;
                     System.out.println("总金额：" + history.price + "元 支付方式：" + history.payWay + " 时间：" + history.time);
-                //}
-            //}
         }
         if(i==1){
             System.out.println("无购物历史！");
