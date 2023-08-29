@@ -85,16 +85,16 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
     }
 
     public void initializeAdministrator() {
-        administrators.add(new Administrator("wang", "wang"));
+        administrators.add(new Administrator("admin", "ynuinfo#777"));
     }
 
     public void initializeUser() {
-        users.add(new User("user", "123"));
+        users.add(new User("Annnn", "Cxy237237."));
     }
 
     public void initializeProduct() {
-        products.add(new Product("牛奶", 3.0, "2023/7/1", "2024/1/1", 50));
-        products.add(new Product("面包", 2.0, "2023/7/10", "2024/7/10", 50));
+        products.add(new Product("牛奶", 3.0, "2023/8/1", "2025/8/1", 50));
+        products.add(new Product("面包", 2.0, "2023/9/10", "2025/7/10", 50));
     }
 
     public void administratorLogin() {
@@ -265,13 +265,13 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
     //使用TXT
     public void saveFile(){
              try {
-                 FileWriter userWriter = new FileWriter("users.txt");
+                 FileWriter userWriter = new FileWriter("users.xlsx");
                  for (User user : users) {
                      userWriter.write(user.getName() + "," + user.getPassword() + "\n");
                  }
                  userWriter.close();
 
-                 FileWriter historyWriter = new FileWriter("histories.txt");
+                 FileWriter historyWriter = new FileWriter("histories.xlsx");
                  for (User user : users) {
                      for (ShoppingCart history : user.histories) {
                          historyWriter.write(history.userName+","+history.price + "," + history.time + "," + history.payWay + "\n");
@@ -279,14 +279,14 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                  }
                      historyWriter.close();
 
-                     FileWriter productWriter = new FileWriter("products.txt");
+                     FileWriter productWriter = new FileWriter("products.xlsx");
                      for (Product product : products) {
                          productWriter.write(product.getName() + "," + product.getPrice() + "," + product.getProDate() + "," +
                                  product.getExpDate() + "," + product.getNumber() + "\n");
                      }
                      productWriter.close();
 
-                     FileWriter administratorWriter = new FileWriter("administrators.txt");
+                     FileWriter administratorWriter = new FileWriter("administrators.xlsx");
                      for (Administrator administrator : administrators) {
                          administratorWriter.write(administrator.getName() + "," + administrator.getPassword() + "\n");
                      }
