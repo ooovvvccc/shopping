@@ -259,13 +259,13 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
     //使用TXT
     public void saveFile(){
              try {
-                 FileWriter userWriter = new FileWriter("users.xlsx");
+                 FileWriter userWriter = new FileWriter("users.txt");
                  for (User user : users) {
                      userWriter.write(user.getName() + "," + user.getPassword() + "\n");
                  }
                  userWriter.close();
 
-                 FileWriter historyWriter = new FileWriter("histories.xlsx");
+                 FileWriter historyWriter = new FileWriter("histories.txt");
                  for (User user : users) {
                      for (ShoppingCart history : user.histories) {
                          historyWriter.write(history.userName+","+history.price + "," + history.time + "," + history.payWay + "\n");
@@ -273,14 +273,14 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                  }
                      historyWriter.close();
 
-                     FileWriter productWriter = new FileWriter("products.xlsx");
+                     FileWriter productWriter = new FileWriter("products.txt");
                      for (Product product : products) {
                          productWriter.write(product.getName() + "," + product.getPrice() + "," + product.getProDate() + "," +
                                  product.getExpDate() + "," + product.getNumber() + "\n");
                      }
                      productWriter.close();
 
-                     FileWriter administratorWriter = new FileWriter("administrators.xlsx");
+                     FileWriter administratorWriter = new FileWriter("administrators.txt");
                      for (Administrator administrator : administrators) {
                          administratorWriter.write(administrator.getName() + "," + administrator.getPassword() + "\n");
                      }
@@ -291,7 +291,7 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
              }
             public void loadFile(){
             try {
-                FileReader userReader = new FileReader("users.xlsx");
+                FileReader userReader = new FileReader("users.txt");
                 Scanner userScanner = new Scanner(userReader);
                 while (userScanner.hasNextLine()) {
                     String[] userInfo = userScanner.nextLine().split(",");
@@ -304,7 +304,7 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                     user.readTxt();
                 }
 
-                FileReader administratorReader = new FileReader("administrators.xlsx");
+                FileReader administratorReader = new FileReader("administrators.txt");
                 Scanner administratorScanner= new Scanner(administratorReader);
                 while ( administratorScanner.hasNextLine()) {
                     String[] administratorInfo =  administratorScanner.nextLine().split(",");
@@ -313,7 +313,7 @@ public class shoppingSystem<Workbook, HSSFWorkbook, HSSFSheet> {
                 }
                 administratorReader.close();
 
-                FileReader productReader = new FileReader("products.xlsx");
+                FileReader productReader = new FileReader("products.txt");
                 Scanner productScanner = new Scanner(productReader);
                 while (productScanner.hasNextLine()) {
                     String[] productInfo = productScanner.nextLine().split(",");
